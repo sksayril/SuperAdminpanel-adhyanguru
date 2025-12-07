@@ -145,7 +145,9 @@ export default function AdminManagement() {
     },
   });
 
-  const admins: Admin[] = adminsResponse?.data || [];
+  const admins: Admin[] = Array.isArray(adminsResponse?.data) 
+    ? adminsResponse.data 
+    : adminsResponse?.data?.items || [];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

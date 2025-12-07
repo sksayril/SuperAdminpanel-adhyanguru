@@ -190,7 +190,9 @@ export default function AgentManagement() {
     },
   });
 
-  const agents: Agent[] = agentsResponse?.data || [];
+  const agents: Agent[] = Array.isArray(agentsResponse?.data) 
+    ? agentsResponse.data 
+    : agentsResponse?.data?.items || [];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

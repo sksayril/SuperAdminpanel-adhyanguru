@@ -18,6 +18,9 @@ import {
   HelpCircle,
   Menu,
   LogOut,
+  Tag,
+  Percent,
+  Wallet,
 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import {
@@ -115,6 +118,26 @@ const adminItems = [
     title: "Agent Management",
     url: "/admin/agents",
     icon: Users,
+  },
+  {
+    title: "Coupons",
+    url: "/admin/coupons",
+    icon: Tag,
+  },
+  {
+    title: "Subscription Plans",
+    url: "/admin/subscription-plans",
+    icon: Package,
+  },
+  {
+    title: "Commission Plans",
+    url: "/admin/commission-plans",
+    icon: Percent,
+  },
+  {
+    title: "Wallets",
+    url: "/admin/wallets",
+    icon: Wallet,
   },
   {
     title: "Analytics",

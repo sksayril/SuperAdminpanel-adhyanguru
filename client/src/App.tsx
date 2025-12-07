@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Switch, Route, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -23,6 +24,10 @@ import AdminCourses from "@/pages/admin/courses";
 import AdminUsers from "@/pages/admin/users";
 import AdminManagement from "@/pages/admin/admins";
 import AgentManagement from "@/pages/admin/agents";
+import CouponsManagement from "@/pages/admin/coupons";
+import SubscriptionPlansManagement from "@/pages/admin/subscription-plans";
+import CommissionPlansManagement from "@/pages/admin/commission-plans";
+import WalletManagement from "@/pages/admin/wallets";
 
 // Public Layout (for auth pages)
 function PublicLayout({ children }: { children: React.ReactNode }) {
@@ -54,8 +59,17 @@ function AuthRedirect({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuth();
   const [, setLocation] = useLocation();
 
+  useEffect(() => {
+    if (isAuthenticated) {
+      // Use setTimeout to ensure this runs after render
+      const timer = setTimeout(() => {
+        setLocation("/admin");
+      }, 0);
+      return () => clearTimeout(timer);
+    }
+  }, [isAuthenticated, setLocation]);
+
   if (isAuthenticated) {
-    setLocation("/admin");
     return null;
   }
 
@@ -178,6 +192,34 @@ function Router() {
         <ProtectedRoute>
           <PrivateLayout>
             <AgentManagement />
+          </PrivateLayout>
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/coupons">
+        <ProtectedRoute>
+          <PrivateLayout>
+            <CouponsManagement />
+          </PrivateLayout>
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/subscription-plans">
+        <ProtectedRoute>
+          <PrivateLayout>
+            <SubscriptionPlansManagement />
+          </PrivateLayout>
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/commission-plans">
+        <ProtectedRoute>
+          <PrivateLayout>
+            <CommissionPlansManagement />
+          </PrivateLayout>
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/wallets">
+        <ProtectedRoute>
+          <PrivateLayout>
+            <WalletManagement />
           </PrivateLayout>
         </ProtectedRoute>
       </Route>
