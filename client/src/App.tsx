@@ -24,10 +24,13 @@ import AdminCourses from "@/pages/admin/courses";
 import AdminUsers from "@/pages/admin/users";
 import AdminManagement from "@/pages/admin/admins";
 import AgentManagement from "@/pages/admin/agents";
+import SuperAgentManagement from "@/pages/admin/super-agents";
 import CouponsManagement from "@/pages/admin/coupons";
 import SubscriptionPlansManagement from "@/pages/admin/subscription-plans";
 import CommissionPlansManagement from "@/pages/admin/commission-plans";
 import WalletManagement from "@/pages/admin/wallets";
+import LevelCategoriesManagement from "@/pages/admin/level-categories";
+import AgentLevelManagement from "@/pages/admin/agent-levels";
 
 // Public Layout (for auth pages)
 function PublicLayout({ children }: { children: React.ReactNode }) {
@@ -195,6 +198,13 @@ function Router() {
           </PrivateLayout>
         </ProtectedRoute>
       </Route>
+      <Route path="/admin/super-agents">
+        <ProtectedRoute>
+          <PrivateLayout>
+            <SuperAgentManagement />
+          </PrivateLayout>
+        </ProtectedRoute>
+      </Route>
       <Route path="/admin/coupons">
         <ProtectedRoute>
           <PrivateLayout>
@@ -220,6 +230,20 @@ function Router() {
         <ProtectedRoute>
           <PrivateLayout>
             <WalletManagement />
+          </PrivateLayout>
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/level-categories">
+        <ProtectedRoute>
+          <PrivateLayout>
+            <LevelCategoriesManagement />
+          </PrivateLayout>
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/agent-levels">
+        <ProtectedRoute>
+          <PrivateLayout>
+            <AgentLevelManagement />
           </PrivateLayout>
         </ProtectedRoute>
       </Route>

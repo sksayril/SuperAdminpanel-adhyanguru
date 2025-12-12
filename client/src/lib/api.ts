@@ -1,5 +1,5 @@
 // API Base URL
-export const API_BASE_URL = "https://7cvccltb-3000.inc1.devtunnels.ms";
+export const API_BASE_URL = "https://api.adhyan.guru";
 
 // Get token from localStorage
 export function getToken(): string | null {
@@ -1171,6 +1171,406 @@ export async function getRevenueAnalytics(params?: {
   const query = queryParams.toString();
   return apiRequest<RevenueAnalyticsResponse>(`/api/super-admin/dashboard/revenue${query ? `?${query}` : ""}`, {
     method: "GET",
+  });
+}
+
+// ==================== LEVEL CATEGORIES MANAGEMENT ====================
+
+export interface Subcategory {
+  _id: string;
+  subcategoryname: string;
+  isActive: boolean;
+  parentCategoryId?: string;
+  parentCategoryName?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface LevelCategory {
+  _id: string;
+  categoryname: string;
+  level: string;
+  ui: number;
+  isActive: boolean;
+  subcategories?: Subcategory[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateLevelCategoryData {
+  categoryname: string;
+  level: string;
+  ui: number;
+}
+
+export interface UpdateLevelCategoryData {
+  categoryname?: string;
+  level?: string;
+  ui?: number;
+  isActive?: boolean;
+}
+
+export interface CreateSubcategoryData {
+  subcategoryname: string;
+  isActive?: boolean;
+}
+
+export interface UpdateSubcategoryData {
+  subcategoryname?: string;
+  isActive?: boolean;
+}
+
+export interface LevelCategoryResponse {
+  success: boolean;
+  message: string;
+  data: LevelCategory;
+}
+
+export interface LevelCategoryListResponse {
+  success: boolean;
+  data: LevelCategory[];
+}
+
+export interface SubcategoryResponse {
+  success: boolean;
+  message: string;
+  data: Subcategory;
+}
+
+export interface DeleteLevelCategoryResponse {
+  success: boolean;
+  message: string;
+  data: {
+    deletedId: string;
+    deletedCategoryName: string;
+  };
+}
+
+export interface DeleteSubcategoryResponse {
+  success: boolean;
+  message: string;
+}
+
+export async function createLevelCategory(data: CreateLevelCategoryData): Promise<LevelCategoryResponse> {
+  return apiRequest<LevelCategoryResponse>("/api/level-categories", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function getLevelCategories(params?: {
+  isActive?: boolean;
+  level?: string;
+  ui?: number;
+}): Promise<LevelCategoryListResponse> {
+  const queryParams = new URLSearchParams();
+  if (params?.isActive !== undefined) queryParams.append("isActive", params.isActive.toString());
+  if (params?.level) queryParams.append("level", params.level);
+  if (params?.ui !== undefined) queryParams.append("ui", params.ui.toString());
+  
+  const query = queryParams.toString();
+  return apiRequest<LevelCategoryListResponse>(`/api/level-categories${query ? `?${query}` : ""}`, {
+    method: "GET",
+  });
+}
+
+export async function getLevelCategoryById(id: string): Promise<LevelCategoryResponse> {
+  return apiRequest<LevelCategoryResponse>(`/api/level-categories/${id}`, {
+    method: "GET",
+  });
+}
+
+export async function updateLevelCategory(id: string, data: UpdateLevelCategoryData): Promise<LevelCategoryResponse> {
+  return apiRequest<LevelCategoryResponse>(`/api/level-categories/${id}/update`, {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function deleteLevelCategory(id: string): Promise<DeleteLevelCategoryResponse> {
+  return apiRequest<DeleteLevelCategoryResponse>(`/api/level-categories/${id}/delete`, {
+    method: "POST",
+  });
+}
+
+export async function createSubcategory(categoryId: string, data: CreateSubcategoryData): Promise<SubcategoryResponse> {
+  return apiRequest<SubcategoryResponse>(`/api/level-categories/${categoryId}/subcategories`, {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function updateSubcategory(subcategoryId: string, data: UpdateSubcategoryData): Promise<SubcategoryResponse> {
+  return apiRequest<SubcategoryResponse>(`/api/level-categories/${subcategoryId}/update`, {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function deleteSubcategory(subcategoryId: string): Promise<DeleteSubcategoryResponse> {
+  return apiRequest<DeleteSubcategoryResponse>(`/api/level-categories/${subcategoryId}/delete`, {
+    method: "POST",
+  });
+}
+
+// ==================== Super Agent Management ====================
+
+export interface AgentLevel {
+  _id: string;
+  levelNumber: number;
+  levelName: string;
+  target: number;
+  targetType: string;
+}
+
+export interface Area {
+  areaname: string;
+  city: string;
+  pincode: string;
+  coordinates: {
+    latitude: number;
+    longitude: number;
+  };
+}
+
+export interface SuperAgent {
+  _id: string;
+  name: string;
+  email: string;
+  phone: string;
+  agentCode: string;
+  level?: AgentLevel;
+  currentTarget?: number;
+  achievedTarget?: number;
+  agentCount?: number;
+  isActive: boolean;
+  area: Area;
+  image?: string;
+  createdBy?: {
+    name: string;
+    email: string;
+  };
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface CreateSuperAgentData {
+  name: string;
+  email: string;
+  phone: string;
+  password: string;
+  level?: string;
+  area: Area;
+  image?: File;
+}
+
+export interface UpdateSuperAgentData {
+  name?: string;
+  phone?: string;
+  level?: string;
+  currentTarget?: number;
+  isActive?: boolean;
+  area?: Area;
+  image?: File;
+}
+
+export interface SuperAgentResponse {
+  success: boolean;
+  message: string;
+  data: SuperAgent;
+}
+
+export interface SuperAgentListResponse {
+  success: boolean;
+  message: string;
+  data: {
+    items: SuperAgent[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      pages: number;
+    };
+  };
+}
+
+export interface DeleteSuperAgentResponse {
+  success: boolean;
+  message: string;
+}
+
+export async function createSuperAgent(data: CreateSuperAgentData): Promise<SuperAgentResponse> {
+  const formData = new FormData();
+  
+  formData.append("name", data.name);
+  formData.append("email", data.email);
+  formData.append("phone", data.phone);
+  formData.append("password", data.password);
+  formData.append("area", JSON.stringify(data.area));
+  
+  if (data.level) {
+    formData.append("level", data.level);
+  }
+  
+  if (data.image) {
+    formData.append("image", data.image);
+  }
+
+  return apiRequestMultipart<SuperAgentResponse>("/api/super-admin/super-agents", formData, "POST");
+}
+
+export async function getSuperAgents(params?: {
+  isActive?: boolean;
+  level?: string;
+  page?: number;
+  limit?: number;
+}): Promise<SuperAgentListResponse> {
+  const queryParams = new URLSearchParams();
+  if (params?.isActive !== undefined) queryParams.append("isActive", params.isActive.toString());
+  if (params?.level) queryParams.append("level", params.level);
+  if (params?.page) queryParams.append("page", params.page.toString());
+  if (params?.limit) queryParams.append("limit", params.limit.toString());
+  
+  const query = queryParams.toString();
+  return apiRequest<SuperAgentListResponse>(`/api/super-admin/super-agents${query ? `?${query}` : ""}`, {
+    method: "GET",
+  });
+}
+
+export async function getSuperAgentById(id: string): Promise<SuperAgentResponse> {
+  return apiRequest<SuperAgentResponse>(`/api/super-admin/super-agents/${id}`, {
+    method: "GET",
+  });
+}
+
+export async function updateSuperAgent(id: string, data: UpdateSuperAgentData): Promise<SuperAgentResponse> {
+  const formData = new FormData();
+  
+  if (data.name) formData.append("name", data.name);
+  if (data.phone) formData.append("phone", data.phone);
+  if (data.level) formData.append("level", data.level);
+  if (data.currentTarget !== undefined) formData.append("currentTarget", data.currentTarget.toString());
+  if (data.isActive !== undefined) formData.append("isActive", data.isActive.toString());
+  if (data.area) formData.append("area", JSON.stringify(data.area));
+  
+  if (data.image) {
+    formData.append("image", data.image);
+  }
+
+  return apiRequestMultipart<SuperAgentResponse>(`/api/super-admin/super-agents/${id}`, formData, "PUT");
+}
+
+export async function deleteSuperAgent(id: string): Promise<DeleteSuperAgentResponse> {
+  return apiRequest<DeleteSuperAgentResponse>(`/api/super-admin/super-agents/${id}`, {
+    method: "DELETE",
+  });
+}
+
+// ==================== Agent Level Management ====================
+
+export interface AgentLevelFull {
+  _id: string;
+  levelNumber: number;
+  levelName: string;
+  description?: string;
+  target: number;
+  targetType: "subscription_count" | "revenue_amount" | "student_count";
+  targetPeriod: "monthly" | "quarterly" | "yearly";
+  benefits?: string[];
+  isActive: boolean;
+  createdBy?: {
+    _id: string;
+    name: string;
+    email: string;
+  };
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface CreateAgentLevelData {
+  levelNumber: number;
+  levelName: string;
+  description?: string;
+  target: number;
+  targetType: "subscription_count" | "revenue_amount" | "student_count";
+  targetPeriod: "monthly" | "quarterly" | "yearly";
+  benefits?: string[];
+}
+
+export interface UpdateAgentLevelData {
+  levelName?: string;
+  description?: string;
+  target?: number;
+  targetType?: "subscription_count" | "revenue_amount" | "student_count";
+  targetPeriod?: "monthly" | "quarterly" | "yearly";
+  benefits?: string[];
+  isActive?: boolean;
+}
+
+export interface AgentLevelResponse {
+  success: boolean;
+  message: string;
+  data: AgentLevelFull;
+}
+
+export interface AgentLevelListResponse {
+  success: boolean;
+  message: string;
+  data: {
+    items: AgentLevelFull[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      pages: number;
+    };
+  };
+}
+
+export interface DeleteAgentLevelResponse {
+  success: boolean;
+  message: string;
+}
+
+export async function createAgentLevel(data: CreateAgentLevelData): Promise<AgentLevelResponse> {
+  return apiRequest<AgentLevelResponse>("/api/super-admin/agent-levels", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function getAgentLevels(params?: {
+  isActive?: boolean;
+  page?: number;
+  limit?: number;
+}): Promise<AgentLevelListResponse> {
+  const queryParams = new URLSearchParams();
+  if (params?.isActive !== undefined) queryParams.append("isActive", params.isActive.toString());
+  if (params?.page) queryParams.append("page", params.page.toString());
+  if (params?.limit) queryParams.append("limit", params.limit.toString());
+  
+  const query = queryParams.toString();
+  return apiRequest<AgentLevelListResponse>(`/api/super-admin/agent-levels${query ? `?${query}` : ""}`, {
+    method: "GET",
+  });
+}
+
+export async function getAgentLevelById(id: string): Promise<AgentLevelResponse> {
+  return apiRequest<AgentLevelResponse>(`/api/super-admin/agent-levels/${id}`, {
+    method: "GET",
+  });
+}
+
+export async function updateAgentLevel(id: string, data: UpdateAgentLevelData): Promise<AgentLevelResponse> {
+  return apiRequest<AgentLevelResponse>(`/api/super-admin/agent-levels/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function deleteAgentLevel(id: string): Promise<DeleteAgentLevelResponse> {
+  return apiRequest<DeleteAgentLevelResponse>(`/api/super-admin/agent-levels/${id}`, {
+    method: "DELETE",
   });
 }
 

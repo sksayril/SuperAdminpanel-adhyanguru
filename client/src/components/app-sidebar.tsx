@@ -21,6 +21,8 @@ import {
   Tag,
   Percent,
   Wallet,
+  FolderTree,
+  UserCheck,
 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import {
@@ -120,6 +122,11 @@ const adminItems = [
     icon: Users,
   },
   {
+    title: "Super Agents",
+    url: "/admin/super-agents",
+    icon: UserCheck,
+  },
+  {
     title: "Coupons",
     url: "/admin/coupons",
     icon: Tag,
@@ -138,6 +145,16 @@ const adminItems = [
     title: "Wallets",
     url: "/admin/wallets",
     icon: Wallet,
+  },
+  {
+    title: "Level Categories",
+    url: "/admin/level-categories",
+    icon: FolderTree,
+  },
+  {
+    title: "Agent Levels",
+    url: "/admin/agent-levels",
+    icon: Award,
   },
   {
     title: "Analytics",
